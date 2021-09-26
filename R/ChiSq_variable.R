@@ -3,15 +3,17 @@
 #' @import dplyr
 #' @import tables
 #'
-globalVariables(c("pchisq"))
+globalVariables(c("pchisq","Variable","Chi.Squared"))
 
 #' @title Chi squared variable from point table.
 #'
-#' @description Contains Chi square distance between the column masses of the table specified in \code{PointTable} and the consolidated table. It allows to identify which mode is responsible for the anomaly in the table in which it is located.
+#' @description Contains Chi square distance between the column masses of the table specified in \code{PointTable} and the consensus table. It allows to identify which mode is responsible for the anomaly in the table in which it is located.
 #' @param base Data set
 #' @param IndK Character with the name of the column that specifies the partition of the data set in k tables.
 #' @param PointTable Table indicator. A character or number that is part of the \code{IndK} registers. This argument specifies the table to which the analysis will be performed.
-#' @return A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consolidated table. It has an indicator of significance with stars based on a scale.
+#' @param interactive If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.
+
+#' @return A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consensus table. It has an indicator of significance with stars based on a scale.
 #' @examples
 #' data(Datak10Contaminated)
 #' ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j")
@@ -51,11 +53,22 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE){
 
 
 
-  AC_Point <- mjca(Table[[k_item]])
-  AC_Cons <- mjca(BaseCons)
-  chi <- sqrt(((((AC_Point$colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
+
+  AC_Point <- mjca(Table[[k_item]], dim)
+  AC_Cons <- mjca(BaseCons, dim)
+
+  MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
+  MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
+
+
+
+  Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
+  Point$AC_Point.colmass[is.na(Point$AC_Point.colmass)] <- 0
+
+  chi <- sqrt(((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
   valp=pchisq(chi,1,lower.tail=FALSE)
   starInd <- c()
+
 
   for (i in 1:length(valp)){
 
@@ -73,12 +86,12 @@ result <- list()
 
 
   if (interactive==FALSE){
-    TableChi <- data.frame(Variable=AC_Point$levelnames, `Chi-Squared`=chi, `val-p`=valp,Signif=starInd)
+    TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=valp,Signif=starInd)
     result$`Difference between modalities - Chi square` <- TableChi
     result$`Signif. codes` <- paste("0 '***' 0.001 '**' 0.05 '*'")
     result
   } else {
-    TableChi <- data.frame(Variable=AC_Point$levelnames, `Chi-Squared`=chi, `val-p`=valp,Signif=starInd)
+    TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=valp,Signif=starInd)
 
     ColorBars <- c()
 

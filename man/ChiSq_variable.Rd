@@ -12,12 +12,14 @@ ChiSq_variable(base, IndK, PointTable, interactive = FALSE)
 \item{IndK}{Character with the name of the column that specifies the partition of the data set in k tables.}
 
 \item{PointTable}{Table indicator. A character or number that is part of the \code{IndK} registers. This argument specifies the table to which the analysis will be performed.}
+
+\item{interactive}{If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.}
 }
 \value{
-A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consolidated table. It has an indicator of significance with stars based on a scale.
+A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consensus table. It has an indicator of significance with stars based on a scale.
 }
 \description{
-Contains Chi square distance between the column masses of the table specified in \code{PointTable} and the consolidated table. It allows to identify which mode is responsible for the anomaly in the table in which it is located.
+Contains Chi square distance between the column masses of the table specified in \code{PointTable} and the consensus table. It allows to identify which mode is responsible for the anomaly in the table in which it is located.
 }
 \examples{
 data(Datak10Contaminated)

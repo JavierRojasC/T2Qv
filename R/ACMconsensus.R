@@ -4,18 +4,18 @@
 #' @import stringr
 #'
 globalVariables(c("AC.SUM1...5.","AC.SUM1...8."))
-#' @title ACM Consolidate
+#' @title ACM Consensus
 #'
-#' @description Multiple correspondence analysis applied to a consolidate table.
+#' @description Multiple correspondence analysis applied to a consensus table.
 #' @param base Data set
 #' @param IndK Character with the name of the column that specifies the partition of the data set in k tables.
 #' @param interactive If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.
-#' @return A Multiple Correspondence Analysis graph of the consolidate table.
+#' @return A Multiple Correspondence Analysis graph of the consensus table.
 #' @examples
 #' data(Datak10Contaminated)
-#' ACMconsolidate(Datak10Contaminated,"GroupLetter", interactive = FALSE)
+#' ACMconsensus(Datak10Contaminated,"GroupLetter", interactive = FALSE)
 #' @export
-ACMconsolidate <- function(base, IndK, interactive=FALSE){
+ACMconsensus <- function(base, IndK, interactive=FALSE){
 
 
   Table <- base
@@ -87,7 +87,7 @@ ACMconsolidate <- function(base, IndK, interactive=FALSE){
       href = ""
     )%>%
     hc_subtitle(text="Multiple correspondence analysis")%>%
-    hc_title(text="Consolidate")
+    hc_title(text="Consensus")
   } else {
   plot(AC)
 }

@@ -359,7 +359,7 @@ Full_Panel <- function(base,IndK ) {
             href = ""
           )%>%
           hc_subtitle(text="Multiple correspondence analysis")%>%
-          hc_title(text="Consolidate")
+          hc_title(text="Consensus")
 
 
       })
@@ -479,9 +479,19 @@ Full_Panel <- function(base,IndK ) {
 
         BaseCons <- as.data.frame(base[,-match(IndK,names(base))])
 
+
         AC_Point <- mjca(Table, dim)
         AC_Cons <- mjca(BaseCons, dim)
-        chi <- sqrt(((((AC_Point$colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
+
+        MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
+        MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
+
+
+
+        Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
+        Point$AC_Point.colmass[is.na(Point$AC_Point.colmass)] <- 0
+
+        chi <- sqrt(((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
         valp=pchisq(chi,1,lower.tail=FALSE)
         starInd <- c()
 
@@ -497,7 +507,7 @@ Full_Panel <- function(base,IndK ) {
             }
           starInd <- c(starInd,star)
         }
-        TableCHI <- data.frame(Variable=AC_Point$levelnames, `Chi-Squared`=chi, `val-p`=signif(valp,6),Signif=starInd)
+        TableCHI <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=signif(valp,6),Signif=starInd)
         TableCHI
       }
       },digits=5)
@@ -516,11 +526,22 @@ Full_Panel <- function(base,IndK ) {
 
           BaseCons <- as.data.frame(base[,-match(IndK,names(base))])
 
+
           AC_Point <- mjca(Table, dim)
           AC_Cons <- mjca(BaseCons, dim)
-          chi <- sqrt(((((AC_Point$colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
+
+          MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
+          MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
+
+
+
+          Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
+          Point$AC_Point.colmass[is.na(Point$AC_Point.colmass)] <- 0
+
+          chi <- sqrt(((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
+
           valp=pchisq(chi,1,lower.tail=FALSE)
-          TableChi <- data.frame(Variable=AC_Point$levelnames, `Chi-Squared`=chi, `val-p`=valp)
+          TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=valp)
 
           ColorBars <- c()
 
