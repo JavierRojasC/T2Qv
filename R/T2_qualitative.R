@@ -4,9 +4,9 @@
 #'
 globalVariables(c("var","qchisq","sd","abline"))
 
-#' @title Multivariate control chart for categorical variables
+#' @title Multivariate control chart for qualitative variables
 #'
-#' @description Multivariate control chart T2 Hotelling applicable for categorical variables.
+#' @description Multivariate control chart T2 Hotelling applicable for qualitative variables.
 #' @param base Data set
 #' @param IndK Character with the name of the column that specifies the partition of the data set in k tables.
 #' @param dim Dimension taken for reduction. Initial dimension - 1 is recommended.
@@ -15,9 +15,9 @@ globalVariables(c("var","qchisq","sd","abline"))
 #' @return A control chart made with the T2 hotelling statistic, applied to detect anomalies in any of the K tables obtained with the specification of \code{IndK}. The control limit of the graph is obtained from the number of dimensions \code{dim} and the type I error \code{alpha}.
 #' @examples
 #' data(Datak10Contaminated)
-#' T2_Categorical(Datak10Contaminated,"GroupLetter",9, FALSE,0.0027)
+#' T2_qualitative(Datak10Contaminated,"GroupLetter",9, FALSE,0.0027)
 #' @export
-T2_Categorical <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
+T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
 
   Table <- list()
   Ind <- base%>% pull(IndK)

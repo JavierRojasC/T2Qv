@@ -14,12 +14,12 @@
 #'
 globalVariables(c("base","HTML","h2","var","qchisq","sd","abline","AC.SUM1...5.","AC.SUM1...8.","pchisq"))
 
-#' @title Full Panel T2 Categorical
+#' @title Full Panel T2 Qualitative
 #'
-#' @description A shiny panel complete with the multivariate control chart for categorical variables, the two ACM charts and the modality distance table. Within the dashboard, arguments such as type I error and dimensionality can be modified.
+#' @description A shiny panel complete with the multivariate control chart for qualitative variables, the two ACM charts and the modality distance table. Within the dashboard, arguments such as type I error and dimensionality can be modified.
 #' @param base Data set
 #' @param IndK Character with the name of the column that specifies the partition of the data set in k tables.
-#' @return A complete panel with the multivariate control chart for categorical variables, the two ACM charts and the modality distance table.
+#' @return A complete panel with the multivariate control chart for qualitative variables, the two ACM charts and the modality distance table.
 #' @examples
 #' \dontrun{
 #' data(Datak10Contaminated)

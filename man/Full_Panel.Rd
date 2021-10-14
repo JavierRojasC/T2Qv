@@ -2,7 +2,7 @@
 % Please edit documentation in R/Full_Panel.R
 \name{Full_Panel}
 \alias{Full_Panel}
-\title{Full Panel T2 Categorical}
+\title{Full Panel T2 Qualitative}
 \usage{
 Full_Panel(base, IndK)
 }
@@ -12,10 +12,10 @@ Full_Panel(base, IndK)
 \item{IndK}{Character with the name of the column that specifies the partition of the data set in k tables.}
 }
 \value{
-A complete panel with the multivariate control chart for categorical variables, the two ACM charts and the modality distance table.
+A complete panel with the multivariate control chart for qualitative variables, the two ACM charts and the modality distance table.
 }
 \description{
-A shiny panel complete with the multivariate control chart for categorical variables, the two ACM charts and the modality distance table. Within the dashboard, arguments such as type I error and dimensionality can be modified.
+A shiny panel complete with the multivariate control chart for qualitative variables, the two ACM charts and the modality distance table. Within the dashboard, arguments such as type I error and dimensionality can be modified.
 }
 \examples{
 \dontrun{
