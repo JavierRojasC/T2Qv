@@ -62,7 +62,7 @@ ACMconsensus <- function(base, IndK, interactive=FALSE){
                   dataLabels=list(format="{point.name}",enabled=TRUE),
                   tooltip = list(pointFormat = "{point.name}"))%>%
     hc_xAxis(
-      title = list(text = "Dim 1"),
+      title = list(text = paste0("Dim 1 - ",round(AC$inertia.e*100,2)[1],"%")),
       plotLines = list(list(
         value = 0,
         color = '#1D4B5E',
@@ -71,7 +71,7 @@ ACMconsensus <- function(base, IndK, interactive=FALSE){
         label = list(text = "",
                      style = list( color = '#1D4B5E', fontWeight = 'bold' )))))%>%
     hc_yAxis(
-      title = list(text = "Dim 2"),
+      title = list(text = paste0("Dim 2 - ",round(AC$inertia.e*100,2)[2],"%")),
       plotLines = list(list(
         value = 0,
         color = '#1D4B5E',

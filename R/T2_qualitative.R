@@ -112,7 +112,7 @@ T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
 
   Categories <- levels(groupFactor)
   if (interactive==FALSE){
-    plot(DtGraph, type='l', main="Multivariate Control Chart", sub=paste0("UL = ",round(LC,2), ", alpha = ",alpha,", ARL = ",round(1/alpha)),xlab="k Table", ylab="T2 Hotelling",ylim=c(0,YLIM))+
+    plot(DtGraph, type='l', main="Multivariate Control Chart", sub=paste0("UCL = ",round(LC,2), ", alpha = ",alpha,", ARL = ",round(1/alpha)),xlab="k Table", ylab="T2 Hotelling",ylim=c(0,YLIM))+
       abline(h=LC, col="blue")
     message('If you want the interactive chart specify interactive = TRUE')
 
@@ -120,7 +120,7 @@ T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
     highchart()%>%
       hc_add_series(DtGraph, type='line',hcaes( y='hote'), name="T2 Hotelling", color="#1C3F63")%>%
       hc_title(text="Multivariate Control Chart")%>%
-      hc_subtitle(text="T2 Hotelling")%>%
+      hc_subtitle(text=paste0("UCL = ",round(LC,2), ", alpha = ",alpha,", ARL = ",round(1/alpha)))%>%
       hc_xAxis(categories=Categories)%>%
       hc_yAxis(max=YLIM,
                plotLines = list(list(
@@ -129,15 +129,16 @@ T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
                  width = 3,
                  zIndex = 4,
                  label = list(text = "",
-                              style = list( color = '#1D4B5E', fontWeight = 'bold' )))))%>%
-      hc_annotations(
-        list(labelOptions = list(y = 35, x = 0, backgroundColor = '#E6EEFF', borderColor = "#1D4B5E"),
-             labels = list(
-               list(style = list(color = '#1D4B5E', fontSize = 8),
-                    useHTML = TRUE,
-                    point = list(x = 1, y = LC+2*sd(DtGraph$hote), xAxis = 0, yAxis = 0),text = paste0("UL = ",round(LC,2), "<br/> alpha = ",alpha,"<br/> ARL = ",round(1/alpha)))
-             )
-        )
-      )
+                              style = list( color = '#1D4B5E', fontWeight = 'bold' )))))
+   # %>%
+   #   hc_annotations(
+   #     list(labelOptions = list(y = 35, x = 0, backgroundColor = '#E6EEFF', borderColor = "#1D4B5E"),
+   #          labels = list(
+   #            list(style = list(color = '#1D4B5E', fontSize = 8),
+   #                 useHTML = TRUE,
+   #                 point = list(x = 1, y = LC+2*sd(DtGraph$hote), xAxis = 0, yAxis = 0),text = paste0("UL = ",round(LC,2), "<br/> alpha = ",alpha,"<br/> ARL = ",round(1/alpha)))
+   #          )
+   #     )
+   #   )
   }
 }

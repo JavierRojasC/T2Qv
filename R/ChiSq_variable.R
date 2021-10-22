@@ -87,7 +87,7 @@ result <- list()
 
   if (interactive==FALSE){
     TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=valp,Signif=starInd)
-    result$`Difference between modalities - Chi square` <- TableChi
+    result$`Chi-squared distance between the column masses of the k table and the consensus` <- TableChi
     result$`Signif. codes` <- paste("0 '***' 0.001 '**' 0.05 '*'")
     result
   } else {
@@ -125,7 +125,7 @@ result <- list()
           )
         )
       )%>%
-      hc_title(text='Difference between modalities - Chi square')%>%
+      hc_title(text='Chi-squared distance between the column masses of the k table and the consensus')%>%
       hc_subtitle(text="Signif. Codes 0 '***' 0.001 '**' 0.05 '*'")
 
   }
