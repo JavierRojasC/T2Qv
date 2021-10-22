@@ -1,6 +1,6 @@
 Package: T2Qv
 Type: Package
-Title: Control Categorical Variables
+Title: Control Qualitative Variables
 Version: 0.1.0
 Authors@R: c(person("Wilson", "Rojas-Preciado", role = c("aut", "cre"),
                      email = "wrojas@utmachala.edu.ec"),
@@ -11,7 +11,7 @@ Authors@R: c(person("Wilson", "Rojas-Preciado", role = c("aut", "cre"),
               person("Omar", "Ruiz-Barzola", role = c("aut","ctb"),
                      email = "oruiz@espol.edu.ec"))
 Maintainer: Wilson Rojas-Preciado <wrojas@utmachala.edu.ec>
-Description: Covers k-table control analysis using multivariate control charts for categorical variables using fundamentals of multiple correspondence analysis and multiple factor analysis. The graphs can be shown in a flat or interactive way, in the same way all the outputs can be shown in an interactive shiny panel.
+Description: Covers k-table control analysis using multivariate control charts for qualitative variables using fundamentals of multiple correspondence analysis and multiple factor analysis. The graphs can be shown in a flat or interactive way, in the same way all the outputs can be shown in an interactive shiny panel.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
