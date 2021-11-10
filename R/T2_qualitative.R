@@ -70,7 +70,7 @@ T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
   }
   coornorm <- list()
   for (i in 1:length(levels(groupFactor))){
-    coornorm[[i]] <- NormalizacionAFM(colcoor[[i]])
+    coornorm[[i]] <- NormalizacionAFM(abs(colcoor[[i]]))
     colnames(coornorm[[i]]) <- paste0("V",1:ncol(coornorm[[i]]))
   }
 
@@ -100,10 +100,16 @@ T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
   for (i in 1:length(levels(groupFactor))){
     t2[[i]]=n[[i]]*(t(muii[[i]]-mu00)%*%solve(sigma)%*%(muii[[i]]-mu00))
   }
+
   T2 <- as.data.frame(as.matrix(t2))
   DtGraph <- data.frame(table=seq(1:nrow(T2)),hote=as.numeric(as.matrix(T2$V1)))
+p=ncol(base)
+m=length(colcoor)
 
-  LC <- qchisq(p=alpha,df=dim)
+alpha2 <- 1-(1-alpha)^dim
+LC <- qchisq(p=alpha2,df=dim, lower.tail = FALSE)
+
+ # LC <-( (p*(m+1)*(m-1))/(m*(m-p)))*qf(alpha,p,(m-p))
   if (max(DtGraph$hote)>LC){
     YLIM=max(DtGraph$hote)+sd(DtGraph$hote)
   } else {

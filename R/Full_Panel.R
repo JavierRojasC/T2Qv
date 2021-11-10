@@ -137,11 +137,11 @@ Full_Panel <- function(base,IndK ) {
                                fluidRow(align="center",
                                         h2("Comparison with Multiple Correspondence Analysis")),
                                column(6,
-                                      withSpinner(highchartOutput('ACMconsolidate',  height = "450px"), type = 7, color='#C7D5EB')),
+                                      withSpinner(highchartOutput('ACMconsolidate',  height = "550px"), type = 7, color='#C7D5EB')),
                                column(6,
-                                      withSpinner(highchartOutput('ACMpoint',  height = "450px"), type = 7, color='#C7D5EB')),
+                                      withSpinner(highchartOutput('ACMpoint',  height = "550px"), type = 7, color='#C7D5EB')),
                                fluidRow(align='center',
-                                        h2('Difference between modalities - Chi square'),
+                                        h2('Chi-squared distance between the column masses of the k table and the consensus'),
                                         radioButtons('table', '',c('Table','BarChart'), inline = TRUE),
                                         tableOutput('tableChi'),
                                         highchartOutput('barChi'))
@@ -211,7 +211,7 @@ Full_Panel <- function(base,IndK ) {
         }
         coornorm <- list()
         for (i in 1:length(levels(groupFactor))){
-          coornorm[[i]] <- NormalizacionAFM(colcoor[[i]])
+          coornorm[[i]] <- NormalizacionAFM(abs(colcoor[[i]]))
           colnames(coornorm[[i]]) <- paste0("V",1:ncol(coornorm[[i]]))
         }
 
@@ -244,7 +244,9 @@ Full_Panel <- function(base,IndK ) {
         T2 <- as.data.frame(as.matrix(t2))
         DtGraph <- data.frame(table=seq(1:nrow(T2)),hote=as.numeric(as.matrix(T2$V1)))
 
-        LC <- qchisq(p=alpha,df=dim)
+
+        alpha2 <- 1-(1-alpha)^dim
+        LC <- qchisq(p=alpha2,df=dim, lower.tail = FALSE)
         if (max(DtGraph$hote)>LC){
           YLIM=max(DtGraph$hote)+sd(DtGraph$hote)
         } else {
@@ -261,7 +263,7 @@ Full_Panel <- function(base,IndK ) {
           highchart()%>%
             hc_add_series(DtGraph, type='line',hcaes( y='hote'), name="T2 Hotelling", color="#1C3F63")%>%
             hc_title(text="Multivariate Control Chart")%>%
-            hc_subtitle(text="T2 Hotelling")%>%
+            hc_subtitle(text=paste0("UCL = ",round(LC,2), ", alpha = ",alpha,", ARL = ",round(1/alpha)))%>%
             hc_xAxis(categories=Categories)%>%
             hc_yAxis(max=YLIM,
                      plotLines = list(list(
@@ -270,16 +272,17 @@ Full_Panel <- function(base,IndK ) {
                        width = 3,
                        zIndex = 4,
                        label = list(text = "",
-                                    style = list( color = '#1D4B5E', fontWeight = 'bold' )))))%>%
-            hc_annotations(
-              list(labelOptions = list(y = 35, x = 0, backgroundColor = '#E6EEFF', borderColor = "#1D4B5E"),
-                   labels = list(
-                     list(style = list(color = '#1D4B5E', fontSize = 8),
-                          useHTML = TRUE,
-                          point = list(x = 1, y = LC+2*sd(DtGraph$hote), xAxis = 0, yAxis = 0),text = paste0("UL = ",round(LC,2), "<br/> alpha = ",alpha,"<br/> ARL = ",round(1/alpha)))
-                   )
-              )
-            )
+                                    style = list( color = '#1D4B5E', fontWeight = 'bold' )))))
+         # %>%
+         #   hc_annotations(
+         #     list(labelOptions = list(y = 35, x = 0, backgroundColor = '#E6EEFF', borderColor = "#1D4B5E"),
+         #          labels = list(
+         #            list(style = list(color = '#1D4B5E', fontSize = 8),
+         #                 useHTML = TRUE,
+         #                 point = list(x = 1, y = LC+2*sd(DtGraph$hote), xAxis = 0, yAxis = 0),text = paste0("UL = ",round(LC,2), "<br/> alpha = ",alpha,"<br/> ARL = ",round(1/alpha)))
+         #          )
+         #     )
+         #   )
         }
       })
       # output$selectPoint <- renderUI({
@@ -334,7 +337,7 @@ Full_Panel <- function(base,IndK ) {
                         dataLabels=list(format="{point.name}",enabled=TRUE),
                         tooltip = list(pointFormat = "{point.name}"))%>%
           hc_xAxis(
-            title = list(text = "Dim 1"),
+            title = list(text = paste0("Dim 1 - ",round(AC$inertia.e*100,2)[1],"%")),
             plotLines = list(list(
               value = 0,
               color = '#1D4B5E',
@@ -343,7 +346,7 @@ Full_Panel <- function(base,IndK ) {
               label = list(text = "",
                            style = list( color = '#1D4B5E', fontWeight = 'bold' )))))%>%
           hc_yAxis(
-            title = list(text = "Dim 2"),
+            title = list(text = paste0("Dim 2 - ",round(AC$inertia.e*100,2)[2],"%")),
             plotLines = list(list(
               value = 0,
               color = '#1D4B5E',
@@ -435,7 +438,7 @@ Full_Panel <- function(base,IndK ) {
                         dataLabels=list(format="{point.name}",enabled=TRUE),
                         tooltip = list(pointFormat = "{point.name}"))%>%
           hc_xAxis(
-            title = list(text = "Dim 1"),
+            title = list(text = paste0("Dim 1 - ",round(AC$inertia.e*100,2)[1],"%")),
             plotLines = list(list(
               value = 0,
               color = '#1D4B5E',
@@ -444,7 +447,7 @@ Full_Panel <- function(base,IndK ) {
               label = list(text = "",
                            style = list( color = '#1D4B5E', fontWeight = 'bold' )))))%>%
           hc_yAxis(
-            title = list(text = "Dim 2"),
+            title = list(text = paste0("Dim 2 - ",round(AC$inertia.e*100,2)[2],"%")),
             plotLines = list(list(
               value = 0,
               color = '#1D4B5E',
