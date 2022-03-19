@@ -212,6 +212,7 @@ Full_Panel <- function(base,IndK ) {
         coornorm <- list()
         for (i in 1:length(levels(groupFactor))){
           coornorm[[i]] <- NormalizacionAFM(abs(colcoor[[i]]))
+          coornorm[[i]] - min(coornorm[[i]])/(max(coornorm[[i]]) - min(coornorm[[i]]))
           colnames(coornorm[[i]]) <- paste0("V",1:ncol(coornorm[[i]]))
         }
 
@@ -227,11 +228,11 @@ Full_Panel <- function(base,IndK ) {
           General <- rbind(General,coornorm[[i]][,1:min(colnum)])
         }
 
-        mu00 <- apply(General,2, 'mean')
+        mu00 <- apply(General,2, 'median')
         muii <- list()
         n <- list()
         for (i in 1:length(levels(groupFactor))){
-          muii[[i]] <- apply(coornorm[[i]][,1:min(colnum)],2,'mean')
+          muii[[i]] <- apply(coornorm[[i]][,1:min(colnum)],2,'median')
           n[[i]] <- nrow(coornorm[[i]])
         }
 
@@ -246,7 +247,7 @@ Full_Panel <- function(base,IndK ) {
 
 
         alpha2 <- 1-(1-alpha)^dim
-        LC <- qchisq(p=alpha2,df=dim, lower.tail = FALSE)
+        LC <- qchisq(p=alpha,df=dim, lower.tail = FALSE)
         if (max(DtGraph$hote)>LC){
           YLIM=max(DtGraph$hote)+sd(DtGraph$hote)
         } else {
@@ -533,9 +534,9 @@ Full_Panel <- function(base,IndK ) {
           AC_Point <- mjca(Table, dim)
           AC_Cons <- mjca(BaseCons, dim)
 
+
           MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
           MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
-
 
 
           Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
@@ -543,16 +544,21 @@ Full_Panel <- function(base,IndK ) {
 
           chi <- sqrt(((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
 
+          chi <- (chi - min(chi))/(max(chi) - min(chi))
+
           valp=pchisq(chi,1,lower.tail=FALSE)
-          TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=valp)
+
+
+          TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi)
 
           ColorBars <- c()
 
-          for (i in 1:length(valp)){
-            if (valp[i]<=0.05 & valp[i]>=0.01){
-              ColorBar="#FF7575"} else if (valp[i]<0.01 & valp[i]>=0.001){
+
+          for (i in 1:length(chi)){
+            if (chi[i]>=0.75 & chi[i]<=0.8){
+              ColorBar="#FF7575"} else if (chi[i]<0.90 & chi[i]>=0.80){
                 ColorBar="#CA3100"
-              } else if (valp[i]<0.001){
+              } else if (chi[i]>0.90){
                 ColorBar="#8A2200"
               } else {
                 ColorBar="#A7A7A7"
@@ -560,16 +566,19 @@ Full_Panel <- function(base,IndK ) {
             ColorBars <- c(ColorBars,ColorBar)
           }
 
+
           #chi0.05 <- qchisq(0.05, 1, lower.tail = FALSE)
           #chi0.01 <- qchisq(0.01, 1, lower.tail = FALSE)
           #chi0.001 <- qchisq(0.001, 1, lower.tail = FALSE)
           TableChi <- data.frame(TableChi, ColorBars)
+
+
           highchart()%>%
             hc_add_series(TableChi, type='column', hcaes(x=Variable,y=Chi.Squared, color=ColorBars), color='#FFFFFF',name='ChiSq Distance')%>%
             hc_xAxis(categories=TableChi$Variable)%>%
-            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=3.841459),color='#FF7575' ,name='*')%>%
-            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=6.634897),color='#CA3100' ,name='**')%>%
-            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=10.82757),color='#8A2200' ,name='***')%>%
+            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=.75),color='#FF7575' ,name='*')%>%
+            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=.80),color='#CA3100' ,name='**')%>%
+            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=.90),color='#8A2200' ,name='***')%>%
             hc_plotOptions(
               line = list(
                 marker = list(
@@ -580,6 +589,7 @@ Full_Panel <- function(base,IndK ) {
             )%>%
             # hc_title(text='Difference between modalities - Chi square')%>%
             hc_subtitle(text="Signif. Codes 0 '***' 0.001 '**' 0.05 '*'")
+
 
         }
       })

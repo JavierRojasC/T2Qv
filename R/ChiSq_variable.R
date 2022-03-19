@@ -2,6 +2,7 @@
 #' @import highcharter
 #' @import dplyr
 #' @import tables
+#' @import stringr
 #'
 globalVariables(c("pchisq","Variable","Chi.Squared"))
 
@@ -12,13 +13,14 @@ globalVariables(c("pchisq","Variable","Chi.Squared"))
 #' @param IndK Character with the name of the column that specifies the partition of the data set in k tables.
 #' @param PointTable Table indicator. A character or number that is part of the \code{IndK} registers. This argument specifies the table to which the analysis will be performed.
 #' @param interactive If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.
+#' @param ylim ylim
 
 #' @return A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consensus table. It has an indicator of significance with stars based on a scale.
 #' @examples
 #' data(Datak10Contaminated)
 #' ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j")
 #' @export
-ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE){
+ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
 
   Table <- list()
   Ind <- base%>% pull(IndK)
@@ -54,81 +56,64 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE){
 
 
 
+
   AC_Point <- mjca(Table[[k_item]], dim)
   AC_Cons <- mjca(BaseCons, dim)
+
+  #AC_Point$Burt
 
   MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
   MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
 
 
 
+
   Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
   Point$AC_Point.colmass[is.na(Point$AC_Point.colmass)] <- 0
+  #sum(AC_Point$colmass)
+  #chi <- (((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2/))*max()
+  rango_punto <- max(Point$AC_Point.colmass)-min(Point$AC_Point.colmass)
+  rango_cons <- max(AC_Cons$colmass)-min(AC_Cons$colmass)
 
-  chi <- sqrt(((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
-  valp=pchisq(chi,1,lower.tail=FALSE)
-  starInd <- c()
+  #(Point$AC_Point.colmass)-(AC_Cons$colmass)
 
-
-  for (i in 1:length(valp)){
-
-    if (valp[i]<=0.05 & valp[i]>=0.01){
-      star="*"} else if (valp[i]<0.01 & valp[i]>=0.001){
-        star="**"
-      } else if (valp[i]<0.001){
-        star="***"
-      } else {
-        star=" "
-      }
-    starInd <- c(starInd,star)
+  for (i in 1:length( unique(AC_Cons$factors[,1]) )){
+    MassPoint
   }
-result <- list()
 
+  chi <- (((Point$AC_Point.colmass)-(AC_Cons$colmass))^2)/(AC_Cons$colmass)
+  chiDF <- data.frame(Point$modalities,chi)
+  xs <- str_split(Point$modalities, ":")
+  XSDF <- as.data.frame(xs[1:length(xs)])
+  XSDF_t <- as.data.frame(t(XSDF))
+  Nombres <- XSDF_t$V1
+  Nombrecorto <- XSDF_t$V2
+  Chi <- data.frame(chi,Nombrecorto,Nombres)
 
-  if (interactive==FALSE){
-    TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=valp,Signif=starInd)
-    result$`Chi-squared distance between the column masses of the k table and the consensus` <- TableChi
-    result$`Signif. codes` <- paste("0 '***' 0.001 '**' 0.05 '*'")
-    result
-  } else {
-    TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=valp,Signif=starInd)
+  chigroup <- Chi%>%
+    group_by(Nombres)%>%
+    summarise(Sum=sum(chi))
 
-    ColorBars <- c()
+  highchart()%>%
+    hc_add_series(chigroup, type='column', hcaes(x=Nombres,y=Sum), color='#FF7575',name='ChiSq Distance')%>%
+    hc_xAxis(categories=chigroup$Nombres)%>%
+    #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=1),color='#FF7575' ,name='*')%>%
+    #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=1.5),color='#CA3100' ,name='**')%>%
+    #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=2),color='#8A2200' ,name='***')%>%
+    hc_plotOptions(
+      line = list(
+        marker = list(
+          enabled=FALSE
 
-    for (i in 1:length(valp)){
-      if (valp[i]<=0.05 & valp[i]>=0.01){
-        ColorBar="#FF7575"} else if (valp[i]<0.01 & valp[i]>=0.001){
-          ColorBar="#CA3100"
-        } else if (valp[i]<0.001){
-          ColorBar="#8A2200"
-        } else {
-          ColorBar="#A7A7A7"
-        }
-      ColorBars <- c(ColorBars,ColorBar)
-    }
-
-    #chi0.05 <- qchisq(0.05, 1, lower.tail = FALSE)
-    #chi0.01 <- qchisq(0.01, 1, lower.tail = FALSE)
-    #chi0.001 <- qchisq(0.001, 1, lower.tail = FALSE)
-    TableChi <- data.frame(TableChi, ColorBars)
-    highchart()%>%
-      hc_add_series(TableChi, type='column', hcaes(x=Variable,y=Chi.Squared, color=ColorBars), color='#FFFFFF',name='ChiSq Distance')%>%
-      hc_xAxis(categories=TableChi$Variable)%>%
-      hc_add_series(TableChi,type='line',hcaes(x=Variable,y=3.841459),color='#FF7575' ,name='*')%>%
-      hc_add_series(TableChi,type='line',hcaes(x=Variable,y=6.634897),color='#CA3100' ,name='**')%>%
-      hc_add_series(TableChi,type='line',hcaes(x=Variable,y=10.82757),color='#8A2200' ,name='***')%>%
-      hc_plotOptions(
-        line = list(
-          marker = list(
-            enabled=FALSE
-
-          )
         )
-      )%>%
-      hc_title(text='Chi-squared distance between the column masses of the k table and the consensus')%>%
-      hc_subtitle(text="Signif. Codes 0 '***' 0.001 '**' 0.05 '*'")
+      )
+    )%>%
+    hc_yAxis(max = ylim)%>%
+    hc_title(text='Chi-squared distance between the column masses of the k table and the consensus')%>%
+    hc_subtitle(text="Signif. Codes 0 '***' 0.001 '**' 0.05 '*'")
 
-  }
+
+
 
   #print(TableCHI, quote = FALSE,row.names = FALSE)
 
