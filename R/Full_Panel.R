@@ -141,6 +141,7 @@ Full_Panel <- function(base,IndK ) {
                                column(6,
                                       withSpinner(highchartOutput('ACMpoint',  height = "550px"), type = 7, color='#C7D5EB')),
                                fluidRow(align='center',
+                                        numericInput("ylim","yLim", 5),
                                         h2('Chi-squared distance between the column masses of the k table and the consensus'),
                                         radioButtons('table', '',c('Table','BarChart'), inline = TRUE),
                                         tableOutput('tableChi'),
@@ -534,51 +535,44 @@ Full_Panel <- function(base,IndK ) {
           AC_Point <- mjca(Table, dim)
           AC_Cons <- mjca(BaseCons, dim)
 
-
           MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
           MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
 
 
+
+
           Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
           Point$AC_Point.colmass[is.na(Point$AC_Point.colmass)] <- 0
+          #sum(AC_Point$colmass)
+          #chi <- (((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2/))*max()
+          rango_punto <- max(Point$AC_Point.colmass)-min(Point$AC_Point.colmass)
+          rango_cons <- max(AC_Cons$colmass)-min(AC_Cons$colmass)
 
-          chi <- sqrt(((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
+          #(Point$AC_Point.colmass)-(AC_Cons$colmass)
 
-          chi <- (chi - min(chi))/(max(chi) - min(chi))
-
-          valp=pchisq(chi,1,lower.tail=FALSE)
-
-
-          TableChi <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi)
-
-          ColorBars <- c()
-
-
-          for (i in 1:length(chi)){
-            if (chi[i]>=0.75 & chi[i]<=0.8){
-              ColorBar="#FF7575"} else if (chi[i]<0.90 & chi[i]>=0.80){
-                ColorBar="#CA3100"
-              } else if (chi[i]>0.90){
-                ColorBar="#8A2200"
-              } else {
-                ColorBar="#A7A7A7"
-              }
-            ColorBars <- c(ColorBars,ColorBar)
+          for (i in 1:length( unique(AC_Cons$factors[,1]) )){
+            MassPoint
           }
 
+          chi <- (((Point$AC_Point.colmass)-(AC_Cons$colmass))^2)/(AC_Cons$colmass)
+          chiDF <- data.frame(Point$modalities,chi)
+          xs <- str_split(Point$modalities, ":")
+          XSDF <- as.data.frame(xs[1:length(xs)])
+          XSDF_t <- as.data.frame(t(XSDF))
+          Nombres <- XSDF_t$V1
+          Nombrecorto <- XSDF_t$V2
+          Chi <- data.frame(chi,Nombrecorto,Nombres)
 
-          #chi0.05 <- qchisq(0.05, 1, lower.tail = FALSE)
-          #chi0.01 <- qchisq(0.01, 1, lower.tail = FALSE)
-          #chi0.001 <- qchisq(0.001, 1, lower.tail = FALSE)
-          TableChi <- data.frame(TableChi, ColorBars)
-
+          chigroup <- Chi%>%
+            group_by(Nombres)%>%
+            summarise(Sum=sum(chi))
 
           highchart()%>%
-            hc_add_series(TableChi, type='column', hcaes(x=Variable,y=Chi.Squared, color=ColorBars), color='#FFFFFF',name='ChiSq Distance')%>%
-            hc_xAxis(categories=TableChi$Variable)%>%
-            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=.75),color='#FF7575' ,name='*')%>%
-            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=.80),color='#CA3100' ,name='**')%>%
-            hc_add_series(TableChi,type='line',hcaes(x=Variable,y=.90),color='#8A2200' ,name='***')%>%
+            hc_add_series(chigroup, type='column', hcaes(x=Nombres,y=Sum), color='#FF7575',name='ChiSq Distance')%>%
+            hc_xAxis(categories=chigroup$Nombres)%>%
+            #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=1),color='#FF7575' ,name='*')%>%
+            #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=1.5),color='#CA3100' ,name='**')%>%
+            #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=2),color='#8A2200' ,name='***')%>%
             hc_plotOptions(
               line = list(
                 marker = list(
@@ -587,9 +581,9 @@ Full_Panel <- function(base,IndK ) {
                 )
               )
             )%>%
-            # hc_title(text='Difference between modalities - Chi square')%>%
+            hc_yAxis(max = input$ylim)%>%
+            hc_title(text='Chi-squared distance between the column masses of the k table and the consensus')%>%
             hc_subtitle(text="Signif. Codes 0 '***' 0.001 '**' 0.05 '*'")
-
 
         }
       })
