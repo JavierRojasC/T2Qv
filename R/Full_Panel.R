@@ -471,49 +471,56 @@ Full_Panel <- function(base,IndK ) {
 
       output$tableChi <- renderTable({
         if (input$table=='Table'){
-        dim=input$dim
-        IndK <- IndK
-        base <- base
-        PointTable <- input$point
-        dim1=ncol(base)-1
+          dim=input$dim
+          IndK <- IndK
+          base <- base
+          PointTable <- input$point
+          dim1=ncol(base)-1
 
-        BaseFilt <- as.data.frame(base%>%
-                                    filter(base[,IndK]==PointTable))
+          BaseFilt <- as.data.frame(base%>%
+                                      filter(base[,IndK]==PointTable))
 
-        Table <- as.data.frame(BaseFilt[,-match(IndK,names(BaseFilt))])
+          Table <- as.data.frame(BaseFilt[,-match(IndK,names(BaseFilt))])
 
-        BaseCons <- as.data.frame(base[,-match(IndK,names(base))])
-
-
-        AC_Point <- mjca(Table, dim)
-        AC_Cons <- mjca(BaseCons, dim)
-
-        MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
-        MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
+          BaseCons <- as.data.frame(base[,-match(IndK,names(base))])
 
 
+          AC_Point <- mjca(Table, dim)
+          AC_Cons <- mjca(BaseCons, dim)
 
-        Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
-        Point$AC_Point.colmass[is.na(Point$AC_Point.colmass)] <- 0
+          MassPoint <- data.frame(modalities=AC_Point$levelnames,AC_Point$colmass)
+          MassConsCero <- data.frame(modalities=AC_Cons$levelnames)
 
-        chi <- sqrt(((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2)/((AC_Cons$colmass)*nrow(base)))
-        valp=pchisq(chi,1,lower.tail=FALSE)
-        starInd <- c()
 
-        for (i in 1:length(valp)){
 
-          if (valp[i]<=0.05 & valp[i]>=0.01){
-            star="*"} else if (valp[i]<0.01 & valp[i]>=0.001){
-              star="**"
-            } else if (valp[i]<0.001){
-              star="***"
-            } else {
-              star=" "
-            }
-          starInd <- c(starInd,star)
-        }
-        TableCHI <- data.frame(Variable=AC_Cons$levelnames, `Chi-Squared`=chi, `val-p`=signif(valp,6),Signif=starInd)
-        TableCHI
+
+          Point <- merge(MassPoint,MassConsCero, id='modalities', all.y=TRUE)
+          Point$AC_Point.colmass[is.na(Point$AC_Point.colmass)] <- 0
+          #sum(AC_Point$colmass)
+          #chi <- (((((Point$AC_Point.colmass)*nrow(base))-((AC_Cons$colmass)*nrow(base)))^2/))*max()
+          rango_punto <- max(Point$AC_Point.colmass)-min(Point$AC_Point.colmass)
+          rango_cons <- max(AC_Cons$colmass)-min(AC_Cons$colmass)
+
+          #(Point$AC_Point.colmass)-(AC_Cons$colmass)
+
+          for (i in 1:length( unique(AC_Cons$factors[,1]) )){
+            MassPoint
+          }
+
+          chi <- (((Point$AC_Point.colmass)-(AC_Cons$colmass))^2)/(AC_Cons$colmass)
+          chiDF <- data.frame(Point$modalities,chi)
+          xs <- str_split(Point$modalities, ":")
+          XSDF <- as.data.frame(xs[1:length(xs)])
+          XSDF_t <- as.data.frame(t(XSDF))
+          Nombres <- XSDF_t$V1
+          Nombrecorto <- XSDF_t$V2
+          Chi <- data.frame(chi,Nombrecorto,Nombres)
+
+          chigroup <- Chi%>%
+            group_by(Nombres)%>%
+            summarise(Sum=sum(chi))
+          names(chigroup) <- c("Variables","ChiSq")
+          chigroup
       }
       },digits=5)
       output$barChi <- renderHighchart({

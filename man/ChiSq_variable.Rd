@@ -4,7 +4,7 @@
 \alias{ChiSq_variable}
 \title{Chi squared variable from point table.}
 \usage{
-ChiSq_variable(base, IndK, PointTable, interactive = FALSE)
+ChiSq_variable(base, IndK, PointTable, interactive = FALSE, ylim = 5)
 }
 \arguments{
 \item{base}{Data set}
@@ -14,6 +14,8 @@ ChiSq_variable(base, IndK, PointTable, interactive = FALSE)
 \item{PointTable}{Table indicator. A character or number that is part of the \code{IndK} registers. This argument specifies the table to which the analysis will be performed.}
 
 \item{interactive}{If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.}
+
+\item{ylim}{ylim}
 }
 \value{
 A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consensus table. It has an indicator of significance with stars based on a scale.
@@ -23,5 +25,5 @@ Contains Chi square distance between the column masses of the table specified in
 }
 \examples{
 data(Datak10Contaminated)
-ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j")
+ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j", ylim=5)
 }

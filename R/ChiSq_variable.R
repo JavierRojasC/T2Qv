@@ -18,7 +18,7 @@ globalVariables(c("pchisq","Variable","Chi.Squared"))
 #' @return A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consensus table. It has an indicator of significance with stars based on a scale.
 #' @examples
 #' data(Datak10Contaminated)
-#' ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j")
+#' ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j", ylim=5)
 #' @export
 ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
 
@@ -94,6 +94,13 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
     group_by(Nombres)%>%
     summarise(Sum=sum(chi))
 
+  if (interactive==FALSE){
+    chigroup <- data.frame(chigroup)
+    names(chigroup) <- c("Variables","ChiSq")
+    chigroup
+
+  } else {
+
   highchart()%>%
     hc_add_series(chigroup, type='column', hcaes(x=Nombres,y=Sum), color='#FF7575',name='ChiSq Distance')%>%
     hc_xAxis(categories=chigroup$Nombres)%>%
@@ -112,7 +119,7 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
     hc_title(text='Chi-squared distance between the column masses of the k table and the consensus')%>%
     hc_subtitle(text="Signif. Codes 0 '***' 0.001 '**' 0.05 '*'")
 
-
+}
 
 
   #print(TableCHI, quote = FALSE,row.names = FALSE)
