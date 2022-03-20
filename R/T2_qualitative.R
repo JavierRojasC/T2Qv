@@ -86,11 +86,11 @@ T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
     General <- rbind(General,coornorm[[i]][,1:min(colnum)])
   }
 
-  mu00 <- apply(General,2, 'mean')
+  mu00 <- apply(General,2, 'median')
   muii <- list()
   n <- list()
   for (i in 1:length(levels(groupFactor))){
-    muii[[i]] <- apply(coornorm[[i]][,1:min(colnum)],2,'mean')
+    muii[[i]] <- apply(coornorm[[i]][,1:min(colnum)],2,'median')
     n[[i]] <- nrow(coornorm[[i]])
   }
 
@@ -106,7 +106,9 @@ T2_qualitative <- function(base, IndK, dim, interactive=FALSE, alpha=0.0027){
 p=ncol(base)
 m=length(colcoor)
 
-alpha2 <- 1-(1-alpha)^dim
+#alpha2 <- 1-(1-alpha)^dim
+alpha2 <- alpha
+
 LC <- qchisq(p=alpha2,df=dim, lower.tail = FALSE)
 
  # LC <-( (p*(m+1)*(m-1))/(m*(m-p)))*qf(alpha,p,(m-p))
