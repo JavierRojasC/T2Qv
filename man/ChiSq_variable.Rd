@@ -15,10 +15,10 @@ ChiSq_variable(base, IndK, PointTable, interactive = FALSE, ylim = 5)
 
 \item{interactive}{If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.}
 
-\item{ylim}{ylim}
+\item{ylim}{y-axis limit.}
 }
 \value{
-A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consensus table. It has an indicator of significance with stars based on a scale.
+A table with Chi square distances between the column masses of the table specified in \code{PointTable} and the consensus table.
 }
 \description{
 Contains Chi square distance between the column masses of the table specified in \code{PointTable} and the consensus table. It allows to identify which mode is responsible for the anomaly in the table in which it is located.

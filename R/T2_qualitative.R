@@ -133,11 +133,11 @@ LC <- qchisq(p=alpha2,df=dim, lower.tail = FALSE)
       hc_yAxis(max=YLIM,
                plotLines = list(list(
                  value = LC,
-                 color = '#1D4B5E',
+                 color = '#821D1D',
                  width = 3,
                  zIndex = 4,
                  label = list(text = "",
-                              style = list( color = '#1D4B5E', fontWeight = 'bold' )))))
+                              style = list( color = '#821D1D', fontWeight = 'bold' )))))
    # %>%
    #   hc_annotations(
    #     list(labelOptions = list(y = 35, x = 0, backgroundColor = '#E6EEFF', borderColor = "#1D4B5E"),

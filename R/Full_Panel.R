@@ -12,7 +12,7 @@
 #' @importFrom shinydashboard dashboardBody
 #' @import shinydashboardPlus shinycssloaders
 #'
-globalVariables(c("base","HTML","h2","var","qchisq","sd","abline","AC.SUM1...5.","AC.SUM1...8.","pchisq"))
+globalVariables(c("base","HTML","h2","var","qchisq","sd","abline","AC.SUM1...5.","AC.SUM1...8."))
 
 #' @title Full Panel T2 Qualitative
 #'
@@ -270,11 +270,11 @@ Full_Panel <- function(base,IndK ) {
             hc_yAxis(max=YLIM,
                      plotLines = list(list(
                        value = LC,
-                       color = '#1D4B5E',
+                       color = '#821D1D',
                        width = 3,
                        zIndex = 4,
                        label = list(text = "",
-                                    style = list( color = '#1D4B5E', fontWeight = 'bold' )))))
+                                    style = list( color = '#821D1D', fontWeight = 'bold' )))))
          # %>%
          #   hc_annotations(
          #     list(labelOptions = list(y = 35, x = 0, backgroundColor = '#E6EEFF', borderColor = "#1D4B5E"),
@@ -574,23 +574,52 @@ Full_Panel <- function(base,IndK ) {
             group_by(Nombres)%>%
             summarise(Sum=sum(chi))
 
-          highchart()%>%
-            hc_add_series(chigroup, type='column', hcaes(x=Nombres,y=Sum), color='#FF7575',name='ChiSq Distance')%>%
-            hc_xAxis(categories=chigroup$Nombres)%>%
-            #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=1),color='#FF7575' ,name='*')%>%
-            #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=1.5),color='#CA3100' ,name='**')%>%
-            #  hc_add_series(TableChi,type='line',hcaes(x=Variable,y=2),color='#8A2200' ,name='***')%>%
-            hc_plotOptions(
-              line = list(
-                marker = list(
-                  enabled=FALSE
 
-                )
-              )
-            )%>%
-            hc_yAxis(max = input$ylim)%>%
-            hc_title(text='Chi-squared distance between the column masses of the k table and the consensus')%>%
-            hc_subtitle(text="Signif. Codes 0 '***' 0.001 '**' 0.05 '*'")
+          Tabs <- Table
+
+          Tables <- list()
+
+          Tabs2 <- data.frame(names(Tabs)[1],list(as.data.frame(table(Tabs[1]))),prop.table(table(Tabs[1])))
+          colnames(Tabs2)=c("Nombres","cat","freq","cat2","prop")
+          Tabs2 <- data.frame(Nombres=Tabs2$Nombres,cat=Tabs2$cat,freq=Tabs2$freq,cat2=paste(Tabs2$cat2,Tabs2$prop))
+          for (i in 2:ncol(Tabs)){
+            Tabss=data.frame(names(Tabs)[i],data.frame(table(Tabs[i])),prop.table(table(Tabs[i])))
+            colnames(Tabss)=c("Nombres","cat","freq","cat2","prop")
+            Tabss <- data.frame(Nombres=Tabss$Nombres,cat=Tabss$cat,freq=Tabss$freq,cat2=paste(Tabss$cat2,Tabss$prop))
+
+            Tabs2 <- rbind(Tabs2,Tabss)
+
+            #Tables[[names(Tabs)[i]]] <- as.data.frame(table(Tabs[i]))
+
+            #A <- map(A, mutate_mapping, hcaes(x = Var1, y = Freq), drop = TRUE)
+            #Tables[[names(Tabs)[i]]]
+          }
+
+
+
+          gp2 <- Tabs2 %>%
+            select(Nombres, cat2, freq) %>%
+            nest(-Nombres) %>%
+            mutate(
+              data = map(data, mutate_mapping, hcaes(name=cat2,x = cat2, y = freq), drop = TRUE),
+              data = map(data, list_parse)
+            ) %>%
+            rename(ttdata = data)
+
+          gptot <- left_join(chigroup, gp2, by = "Nombres")
+
+          highchart()%>%
+            hc_add_series(gptot, type='column', hcaes(x=Nombres,y=Sum), color='#1A578F',name='ChiSq Distance')%>%
+            hc_xAxis(categories=chigroup$Nombres) %>%
+            hc_tooltip(
+              useHTML = TRUE,
+              headerFormat = "<b>{point.key}</b>",
+              pointFormatter = tooltip_chart(accesor = "ttdata",width = 350, height = 220,
+                                             hc_opts = list(chart = list(type = "pie"),
+                                                            xAxis = list(title = list(text = "lifeExp")))))
+
+
+
 
         }
       })
