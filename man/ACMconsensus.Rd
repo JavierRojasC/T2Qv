@@ -4,7 +4,7 @@
 \alias{ACMconsensus}
 \title{ACM Consensus}
 \usage{
-ACMconsensus(base, IndK, interactive = FALSE)
+ACMconsensus(base, IndK, interactive = FALSE, interactive3D = FALSE)
 }
 \arguments{
 \item{base}{Data set}
@@ -12,6 +12,8 @@ ACMconsensus(base, IndK, interactive = FALSE)
 \item{IndK}{Character with the name of the column that specifies the partition of the data set in k tables.}
 
 \item{interactive}{If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.}
+
+\item{interactive3D}{If it is TRUE, the graph will be shown interactively in 3D.}
 }
 \value{
 A Multiple Correspondence Analysis graph of the consensus table.

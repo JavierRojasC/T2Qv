@@ -528,6 +528,8 @@ Full_Panel <- function(base,IndK ) {
           dim=input$dim
           IndK <- IndK
           base <- base
+          names(base) <- str_replace(names(base), " ",".")
+
           PointTable <- input$point
           dim1=ncol(base)-1
 

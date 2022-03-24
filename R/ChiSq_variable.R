@@ -21,7 +21,7 @@ globalVariables(c("Variable","Chi.Squared"))
 #' ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j", ylim=5)
 #' @export
 ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
-
+  names(base) <- str_replace(names(base), " ",".")
   Table <- list()
   Ind <- base%>% pull(IndK)
   groupFactor=as.factor(Ind)

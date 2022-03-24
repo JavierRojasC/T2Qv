@@ -4,7 +4,7 @@
 \alias{ACMpoint}
 \title{ACM in one point}
 \usage{
-ACMpoint(base, IndK, PointTable, interactive = FALSE)
+ACMpoint(base, IndK, PointTable, interactive = FALSE, interactive3D = FALSE)
 }
 \arguments{
 \item{base}{Data set}
@@ -14,6 +14,8 @@ ACMpoint(base, IndK, PointTable, interactive = FALSE)
 \item{PointTable}{Table indicator. A character or number that is part of the \code{IndK} registers. This argument specifies the table to which the analysis will be performed.}
 
 \item{interactive}{If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.}
+
+\item{interactive3D}{If it is TRUE, the graph will be shown interactively in 3D.}
 }
 \value{
 A Multiple Correspondence Analysis graph of the table specified in \code{PointTable}.
@@ -23,5 +25,5 @@ Multiple correspondence analysis applied to a specific table.
 }
 \examples{
 data(Datak10Contaminated)
-ACMpoint(Datak10Contaminated,"GroupLetter", PointTable="j", interactive=FALSE)
+ACMpoint(Datak10Contaminated,"GroupLetter", PointTable="j", interactive=FALSE, interactive3D=FALSE)
 }
