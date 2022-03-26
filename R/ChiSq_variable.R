@@ -4,7 +4,7 @@
 #' @import tables
 #' @import stringr
 #' @import tidyr
-
+#' @import purrr
 #'
 globalVariables(c("Variable","Chi.Squared"))
 

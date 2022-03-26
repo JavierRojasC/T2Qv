@@ -4,6 +4,7 @@
 #' @import stringr
 #' @import htmltools
 #' @import tidyr
+#' @import purrr
 #' @importFrom shiny column radioButtons textOutput checkboxInput fileInput fluidRow htmlOutput icon numericInput reactive renderPrint renderTable renderText renderUI runApp selectInput shinyApp sliderInput stopApp tableOutput tabPanel uiOutput withMathJax verbatimTextOutput
 #' @importFrom shinydashboard sidebarMenu
 #' @importFrom shinydashboard menuItem
