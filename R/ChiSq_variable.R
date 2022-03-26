@@ -130,7 +130,7 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
       select(Nombres, cat2, freq) %>%
       nest(-Nombres) %>%
       mutate(
-        data = map(data, mutate_mapping, hcaes(name=cat2,x = cat2, y = freq), drop = TRUE),
+        data = map(data, mutate_mapping, hcaes(name=cat2,x = cat2, y = round(freq,3)), drop = TRUE),
         data = map(data, list_parse)
       ) %>%
       rename(ttdata = data)
