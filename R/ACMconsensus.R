@@ -2,6 +2,8 @@
 #' @import highcharter
 #' @import dplyr
 #' @import stringr
+#' @import ggplot2
+#' @import plotly
 #'
 globalVariables(c("AC.SUM1...5.","AC.SUM1...8."))
 #' @title ACM Consensus
