@@ -3,6 +3,8 @@
 #' @import dplyr
 #' @import tables
 #' @import stringr
+#' @import tidyr
+
 #'
 globalVariables(c("Variable","Chi.Squared"))
 

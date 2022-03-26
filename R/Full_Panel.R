@@ -3,6 +3,7 @@
 #' @import dplyr
 #' @import stringr
 #' @import htmltools
+#' @import tidyr
 #' @importFrom shiny column radioButtons textOutput checkboxInput fileInput fluidRow htmlOutput icon numericInput reactive renderPrint renderTable renderText renderUI runApp selectInput shinyApp sliderInput stopApp tableOutput tabPanel uiOutput withMathJax verbatimTextOutput
 #' @importFrom shinydashboard sidebarMenu
 #' @importFrom shinydashboard menuItem
@@ -625,6 +626,8 @@ Full_Panel <- function(base,IndK ) {
 
         }
       })
+
+
     })
   runApp(app)
 }
