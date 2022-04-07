@@ -22,7 +22,7 @@ globalVariables(c("Variable","Chi.Squared"))
 #' data(Datak10Contaminated)
 #' ChiSq_variable(Datak10Contaminated, "GroupLetter", PointTable="j", ylim=5)
 #' @export
-ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
+ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=0.09){
   names(base) <- str_replace(names(base), " ",".")
   Table <- list()
   Ind <- base%>% pull(IndK)
@@ -137,15 +137,66 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=5){
 
     gptot <- left_join(chigroup, gp2, by = "Nombres")
 
+
+
+
+
+
+
+    Tabs.1 <- BaseCons
+
+
+    Tables.1 <- list()
+
+    Tabs2.1 <- data.frame(names(Tabs.1)[1],list(as.data.frame(table(Tabs.1[1]))),prop.table(table(Tabs.1[1])))
+    colnames(Tabs2.1)=c("Nombres","cat","freq","cat2","prop")
+    Tabs2.1 <- data.frame(Nombres=Tabs2.1$Nombres,cat=Tabs2.1$cat,freq=Tabs2.1$freq,cat2=paste(Tabs2.1$cat2,Tabs2.1$prop))
+    for (i in 2:ncol(Tabs.1)){
+      Tabss.1=data.frame(names(Tabs.1)[i],data.frame(table(Tabs.1[i])),prop.table(table(Tabs.1[i])))
+      colnames(Tabss.1)=c("Nombres","cat","freq","cat2","prop")
+      Tabss.1 <- data.frame(Nombres=Tabss.1$Nombres,cat=Tabss.1$cat,freq=Tabss.1$freq,cat2=paste(Tabss.1$cat2,round(Tabss.1$prop,2)))
+
+      Tabs2.1 <- rbind(Tabs2.1,Tabss.1)
+
+      #Tables[[names(Tabs)[i]]] <- as.data.frame(table(Tabs[i]))
+
+      #A <- map(A, mutate_mapping, hcaes(x = Var1, y = Freq), drop = TRUE)
+      #Tables[[names(Tabs)[i]]]
+    }
+
+
+
+    gp2.1 <- Tabs2.1 %>%
+      select(Nombres, cat2, freq) %>%
+      nest(-Nombres) %>%
+      mutate(
+        data = map(data, mutate_mapping, hcaes(name=cat2,x = cat2, y = freq), drop = TRUE),
+        data = map(data, list_parse)
+      ) %>%
+      rename(ttdata = data)
+
+    chigroup.1=data.frame(chigroup,sd=sd(chigroup$Sum)/2)
+
+    gptot.1 <- left_join(chigroup.1, gp2.1, by = "Nombres")
+
+
+
+
+
+
+
     highchart()%>%
       hc_add_series(gptot, type='column', hcaes(x=Nombres,y=Sum), color='#1A578F',name='ChiSq Distance')%>%
+      hc_add_series(gptot.1, type='scatter', hcaes(x=Nombres,y=Sum+sd(chigroup$Sum)/4),
+                    color='#A1A1A1',name='Consensus reference')%>%
       hc_xAxis(categories=chigroup$Nombres) %>%
       hc_tooltip(
         useHTML = TRUE,
         headerFormat = "<b>{point.key}</b>",
         pointFormatter = tooltip_chart(accesor = "ttdata",width = 350, height = 220,
                                        hc_opts = list(chart = list(type = "pie"),
-                                                      xAxis = list(title = list(text = "lifeExp")))))
+                                                      xAxis = list(title = list(text = "lifeExp")))))%>%
+      hc_yAxis(max=ylim)
 
 
 
