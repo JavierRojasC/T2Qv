@@ -4,7 +4,7 @@
 \alias{ChiSq_variable}
 \title{Chi squared variable from point table.}
 \usage{
-ChiSq_variable(base, IndK, PointTable, interactive = FALSE, ylim = 5)
+ChiSq_variable(base, IndK, PointTable, interactive = FALSE, ylim = 0.09)
 }
 \arguments{
 \item{base}{Data set}
