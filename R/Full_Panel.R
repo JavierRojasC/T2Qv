@@ -648,7 +648,7 @@ Full_Panel <- function(base,IndK ) {
             ) %>%
             rename(ttdata = data)
 
-          chigroup.1=data.frame(chigroup,sd=sd(chigroup$Sum)/2)
+          chigroup.1=data.frame(chigroup,sd=sd(chigroup$Sum)/2,limy= (chigroup$Sum+sd(chigroup$Sum)/4))
 
           gptot.1 <- left_join(chigroup.1, gp2.1, by = "Nombres")
 
@@ -657,7 +657,7 @@ Full_Panel <- function(base,IndK ) {
           highchart()%>%
             hc_add_series(gptot, type='column', hcaes(x=Nombres,y=Sum),
                           color='#1A578F',name='ChiSq Distance')%>%
-            hc_add_series(gptot.1, type='scatter', hcaes(x=Nombres,y=Sum+sd(chigroup$Sum)/4),
+            hc_add_series(gptot.1, type='scatter', hcaes(x=Nombres,y=limy),
                           color='#A1A1A1',name='Consensus reference')%>%
             hc_xAxis(categories=chigroup$Nombres) %>%
             hc_tooltip(
