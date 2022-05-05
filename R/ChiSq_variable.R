@@ -182,7 +182,7 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=0.09)
 
 
 
-
+    gptot$Sum=round(gptot$Sum,2)
 
 
     highchart()%>%
