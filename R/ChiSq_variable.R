@@ -95,7 +95,7 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=0.09)
 
   chigroup <- Chi%>%
     group_by(Nombres)%>%
-    summarise(Sum=round(sum(chi),2))
+    summarise(Sum=sum(chi))
 
   if (interactive==FALSE){
     names(chigroup) <- c("Variables","ChiSq")
@@ -187,9 +187,9 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=0.09)
 
     highchart()%>%
       hc_add_series(gptot, type='column', hcaes(x=Nombres,y=Sum), color='#1A578F',name='ChiSq Distance')%>%
-      hc_add_series(gptot.1, type='scatter', hcaes(x=Nombres,y=Sum+sd(chigroup$Sum)/4),
+      hc_add_series(gptot.1, type='scatter', hcaes(x=Nombres,y=Sum+sd(Sum)/4),
                     color='#A1A1A1',name='Consensus reference')%>%
-      hc_xAxis(categories=chigroup$Nombres) %>%
+      hc_xAxis(categories=gptot$Nombres) %>%
       hc_tooltip(
         useHTML = TRUE,
         headerFormat = "<b>{point.key}</b>",
