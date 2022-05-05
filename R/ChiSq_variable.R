@@ -95,7 +95,7 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=0.09)
 
   chigroup <- Chi%>%
     group_by(Nombres)%>%
-    summarise(Sum=sum(chi))
+    summarise(Sum=round(sum(chi),2))
 
   if (interactive==FALSE){
     names(chigroup) <- c("Variables","ChiSq")
