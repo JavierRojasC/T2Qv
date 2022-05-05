@@ -125,6 +125,7 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=0.09)
     }
 
 
+    Tabs2$cat2=round(Tabs2$cat2,2)
 
     gp2 <- Tabs2 %>%
       select(Nombres, cat2, freq) %>%
@@ -165,6 +166,7 @@ ChiSq_variable <- function(base, IndK, PointTable, interactive=FALSE, ylim=0.09)
     }
 
 
+    Tabs2.1$cat2=round(Tabs2.1$cat2,2)
 
     gp2.1 <- Tabs2.1 %>%
       select(Nombres, cat2, freq) %>%
