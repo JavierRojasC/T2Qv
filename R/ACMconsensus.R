@@ -2,8 +2,6 @@
 #' @import highcharter
 #' @import dplyr
 #' @import stringr
-#' @import ggplot2
-#' @import plotly
 #'
 globalVariables(c("AC.SUM1...5.","AC.SUM1...8."))
 #' @title ACM Consensus
@@ -12,7 +10,6 @@ globalVariables(c("AC.SUM1...5.","AC.SUM1...8."))
 #' @param base Data set
 #' @param IndK Character with the name of the column that specifies the partition of the data set in k tables.
 #' @param interactive If it is TRUE, the graph will be shown interactively. If FALSE, the graph is displayed flat. FALSE is the default.
-#' @param interactive3D If it is TRUE, the graph will be shown interactively in 3D.
 #' @return A Multiple Correspondence Analysis graph of the consensus table.
 #' @examples
 #' data(Datak10Contaminated)
@@ -44,30 +41,30 @@ ACMconsensus <- function(base, IndK, interactive=FALSE, interactive3D=FALSE){
 
 
 
-  AC <- mjca(Table, nd=3)
-  if (interactive3D==TRUE){
-    AC.SUM <- summary(AC)
-    AC.SUM1 <- AC.SUM$columns
-    Coord <- data.frame(AC.SUM1[,5],AC.SUM1[,8],AC.SUM1[,11])/1000
-
-    Nombres <- data.frame(AC.SUM1$name)
-    xs <- str_split(Nombres$AC.SUM1.name, ":")
-    XSDF <- as.data.frame(xs[1:length(xs)])
-    XSDF_t <- as.data.frame(t(XSDF))
-    Nombres <- XSDF_t$V1
-    Nombrecorto <- XSDF_t$V2
-    Coord <- data.frame(Coord,Nombrecorto,Nombres)
-    names(Coord)=c("x","y","z","Nombrecorto","Nombres")
-    t <- list(
-      family = "sans serif",
-      size = 14,
-      color = toRGB("grey50"))
-
-    p <- plot_ly(Coord, x=~x, y=~y, z=~z, color=Nombres, text=~Nombrecorto) %>%
-      add_markers()%>%add_text(textfont = t, textposition = "top right")%>% layout(title="Multiple correspondence analysis - Consensus")
-    p
-
-  } else {
+#  AC <- mjca(Table, nd=3)
+#  if (interactive3D==TRUE){
+#    AC.SUM <- summary(AC)
+#    AC.SUM1 <- AC.SUM$columns
+#    Coord <- data.frame(AC.SUM1[,5],AC.SUM1[,8],AC.SUM1[,11])/1000
+#
+#    Nombres <- data.frame(AC.SUM1$name)
+#    xs <- str_split(Nombres$AC.SUM1.name, ":")
+#    XSDF <- as.data.frame(xs[1:length(xs)])
+#    XSDF_t <- as.data.frame(t(XSDF))
+#    Nombres <- XSDF_t$V1
+#    Nombrecorto <- XSDF_t$V2
+#    Coord <- data.frame(Coord,Nombrecorto,Nombres)
+#    names(Coord)=c("x","y","z","Nombrecorto","Nombres")
+#    t <- list(
+#      family = "sans serif",
+#      size = 14,
+#      color = toRGB("grey50"))
+#
+#    p <- plot_ly(Coord, x=~x, y=~y, z=~z, color=Nombres, text=~Nombrecorto) %>%
+#      add_markers()%>%add_text(textfont = t, textposition = "top right")%>% layout(title="Multiple correspondence analysis - Consensus")
+#    p
+#
+#  } else {
 
   if (interactive==TRUE){
   AC.SUM <- summary(AC)
@@ -119,4 +116,4 @@ ACMconsensus <- function(base, IndK, interactive=FALSE, interactive3D=FALSE){
   plot(AC)
 }
 }
-}
+#}

@@ -585,11 +585,11 @@ Full_Panel <- function(base,IndK ) {
 
           Tabs2 <- data.frame(names(Tabs)[1],list(as.data.frame(table(Tabs[1]))),prop.table(table(Tabs[1])))
           colnames(Tabs2)=c("Nombres","cat","freq","cat2","prop")
-          Tabs2 <- data.frame(Nombres=Tabs2$Nombres,cat=Tabs2$cat,freq=Tabs2$freq,cat2=paste(Tabs2$cat2,Tabs2$prop))
+          Tabs2 <- data.frame(Nombres=Tabs2$Nombres,cat=Tabs2$cat,freq=Tabs2$freq,cat2=paste(Tabs2$cat2,round(Tabs2$prop,2)))
           for (i in 2:ncol(Tabs)){
             Tabss=data.frame(names(Tabs)[i],data.frame(table(Tabs[i])),prop.table(table(Tabs[i])))
             colnames(Tabss)=c("Nombres","cat","freq","cat2","prop")
-            Tabss <- data.frame(Nombres=Tabss$Nombres,cat=Tabss$cat,freq=Tabss$freq,cat2=paste(Tabss$cat2,Tabss$prop))
+            Tabss <- data.frame(Nombres=Tabss$Nombres,cat=Tabss$cat,freq=Tabss$freq,cat2=paste(Tabss$cat2,round(Tabss$prop,2)))
 
             Tabs2 <- rbind(Tabs2,Tabss)
 
@@ -598,6 +598,7 @@ Full_Panel <- function(base,IndK ) {
             #A <- map(A, mutate_mapping, hcaes(x = Var1, y = Freq), drop = TRUE)
             #Tables[[names(Tabs)[i]]]
           }
+
 
 
 
@@ -623,7 +624,7 @@ Full_Panel <- function(base,IndK ) {
 
           Tabs2.1 <- data.frame(names(Tabs.1)[1],list(as.data.frame(table(Tabs.1[1]))),prop.table(table(Tabs.1[1])))
           colnames(Tabs2.1)=c("Nombres","cat","freq","cat2","prop")
-          Tabs2.1 <- data.frame(Nombres=Tabs2.1$Nombres,cat=Tabs2.1$cat,freq=Tabs2.1$freq,cat2=paste(Tabs2.1$cat2,Tabs2.1$prop))
+          Tabs2.1 <- data.frame(Nombres=Tabs2.1$Nombres,cat=Tabs2.1$cat,freq=Tabs2.1$freq,cat2=paste(Tabs2.1$cat2,round(Tabs2.1$prop,2)))
           for (i in 2:ncol(Tabs.1)){
             Tabss.1=data.frame(names(Tabs.1)[i],data.frame(table(Tabs.1[i])),prop.table(table(Tabs.1[i])))
             colnames(Tabss.1)=c("Nombres","cat","freq","cat2","prop")
@@ -636,6 +637,7 @@ Full_Panel <- function(base,IndK ) {
             #A <- map(A, mutate_mapping, hcaes(x = Var1, y = Freq), drop = TRUE)
             #Tables[[names(Tabs)[i]]]
           }
+
 
 
 
@@ -652,6 +654,8 @@ Full_Panel <- function(base,IndK ) {
 
           gptot.1 <- left_join(chigroup.1, gp2.1, by = "Nombres")
 
+
+          gptot$Sum=round(gptot$Sum,2)
 
 
           highchart()%>%
